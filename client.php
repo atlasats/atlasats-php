@@ -12,17 +12,17 @@ class AtlasClient {
 
 	function _get($path, $params) {
 		$resp = Unirest::get($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
-		return $resp->raw_body;
+		return $resp->body;
 	}
 
 	function _post($path, $params) {
 		$resp = Unirest::post($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
-		return $resp->raw_body;
+		return $resp->body;
 	}
 
 	function _delete($path, $params) {
 		$resp = Unirest::delete($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
-		return $resp->raw_body;
+		return $resp->body;
 	}
 
 	function account_info() {
@@ -41,16 +41,12 @@ class AtlasClient {
 		return $this->_get("/api/v1/orders/" . $orderid);
 	}
 
-	function cancel_order(orderid) {
+	function cancel_order($orderid) {
 		return $this->_delete("/api/v1/orders/" . $orderid);
 	}
 
 	function recent_orders() {
 		return $this->_get("/api/v1/orders");
-	}
-
-	function account_info() {
-		return $this->_get("/api/v1/account");
 	}
 
 	function book($item, $currency) {
