@@ -20,6 +20,11 @@ class AtlasClient {
 		return $resp->raw_body;
 	}
 
+	function _delete($path, $params) {
+		$resp = Unirest::delete($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
+		return $resp->raw_body;
+	}
+
 	function account_info() {
 		return $this->_get("/api/v1/account", null);
 	}
@@ -31,22 +36,30 @@ class AtlasClient {
 	function place_market_order($item, $currency, $side, $quantity) {
 		return $this->_post("/api/v1/orders", array("item" => $item, "currency" => $currency, "side" => $side, "quantity" => $quantity, "type" => "market"));
 	}
+
+	function order_info($orderid) {
+		return $this->_get("/api/v1/orders/" . $orderid);
+	}
+
+	function cancel_order(orderid) {
+		return $this->_delete("/api/v1/orders/" . $orderid);
+	}
+
+	function recent_orders() {
+		return $this->_get("/api/v1/orders");
+	}
+
+	function account_info() {
+		return $this->_get("/api/v1/account");
+	}
+
+	function book($item, $currency) {
+		return $this->_get("/api/v1/market/book", array("item" => $item, "currency" => $currency));
+	}
+
+	function recent_trades($item, $currency) {
+		return $this->_get("/api/v1/market/trades/recent", array("item" => $item, "currency" => $currency));
+	}
 }
 
-$client = new AtlasClient("http://atlasats.eu", "8ffb026971471c0bfe3290ad39e205f9");
-
-$acct_info = $client->account_info();
-
-$order_buy = $client->place_limit_order("BTC", "EUR", "BUY", 0.1337, 609.0);
-
-$order_sell = $client->place_limit_order("BTC", "EUR", "SELL", 0.7331, 611.59);
-
-print "Account Info\n";
-print "==================\n";
-print $acct_info . "\n";
-print "BUY: created\n";
-print "==================\n";
-print $order_buy . "\n";
-print "SELL: created\n";
-print $order_sell . "\n";
 ?>
