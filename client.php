@@ -10,23 +10,27 @@ class AtlasClient {
 		$this->apikey = $apikey;
 	}
 
+	function _headers() {
+		return array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\"");
+	}
+
 	function _get($path, $params) {
-		$resp = Unirest::get($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
+		$resp = Unirest::get($this->baseurl . $path, $this->_headers(), $params);
 		return $resp->body;
 	}
 
 	function _post($path, $params) {
-		$resp = Unirest::post($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
+		$resp = Unirest::post($this->baseurl . $path, $this->_headers(), $params);
 		return $resp->body;
 	}
 
 	function _delete($path, $params) {
-		$resp = Unirest::delete($this->baseurl . $path, array("Accept" => "application/json", "Authorization" => "Token token=\"" . $this->apikey . "\""), $params);
+		$resp = Unirest::delete($this->baseurl . $path, $this->_headers(), $params);
 		return $resp->body;
 	}
 
 	function account_info() {
-		return $this->_get("/api/v1/account", null);
+		return $this->_get("/api/v1/account");
 	}
 
 	function place_limit_order($item, $currency, $side, $quantity, $price) {
@@ -47,6 +51,10 @@ class AtlasClient {
 
 	function recent_orders() {
 		return $this->_get("/api/v1/orders");
+	}
+
+	function symbols() {
+		return $this->_get('/api/v1/market/symbols')
 	}
 
 	function book($item, $currency) {
